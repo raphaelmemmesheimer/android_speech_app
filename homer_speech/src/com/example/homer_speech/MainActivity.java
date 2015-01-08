@@ -24,27 +24,27 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-
-public class MainActivity extends Activity implements OnInitListener, android.view.View.OnClickListener{
+public class MainActivity extends Activity implements OnInitListener,
+		android.view.View.OnClickListener {
 	public static final String TAG = "homer_speech";
 	static TextToSpeech tts;
 	static SpeechRecognizer speech_recognizer;
 	static SocketServerThread socket_server_thread;
 	static Intent intent;
-	//static ServerSocket server_socket;
 
-	void speak(String text)
-	{
+	// static ServerSocket server_socket;
+
+	void speak(String text) {
 		if (!tts.isSpeaking()) {
 			TextView tv = (TextView) findViewById(R.id.textView2);
 			tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-			Log.d(TAG, "Speaking "+text);	
+			Log.d(TAG, "Speaking " + text);
 
-			tv.setText("Speaking "+text);
+			tv.setText("Speaking " + text);
 		}
 	}
 
@@ -54,18 +54,18 @@ public class MainActivity extends Activity implements OnInitListener, android.vi
 		setContentView(R.layout.activity_main);
 		tts = new TextToSpeech(this, (OnInitListener) this);
 		speech_recognizer = SpeechRecognizer.createSpeechRecognizer(this);
-		//        socket_server_thread = new SocketServerThread();
-		//        socket_server_thread.run();
+		// socket_server_thread = new SocketServerThread();
+		// socket_server_thread.run();
 
-
-		/// speech recognition
+		// / speech recognition
 		intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-		//intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+				RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+		// intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
 		// intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,"voice.recognition.test");
 
-		Thread fst = new Thread(new SocketServerThread());  
-		fst.start();  
+		Thread fst = new Thread(new SocketServerThread());
+		fst.start();
 
 		WifiManager wifiMgr = (WifiManager) getSystemService(WIFI_SERVICE);
 		WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
@@ -77,17 +77,15 @@ public class MainActivity extends Activity implements OnInitListener, android.vi
 		button_speak.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				// Perform action on click
-				speak(((TextView) findViewById(R.id.textView2)).getText().toString());
+				speak(((TextView) findViewById(R.id.textView2)).getText()
+						.toString());
 
 			}
 		});
 
-
 		final Button button_speak1 = (Button) findViewById(R.id.button2);
 		button_speak1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-
-
 
 				speech_recognizer.setRecognitionListener(new listener());
 
@@ -98,12 +96,6 @@ public class MainActivity extends Activity implements OnInitListener, android.vi
 
 			}
 		});
-
-
-		//        final Button button_start_recognition = (Button) findViewById(R.id.button2);
-		//
-		//        button_start_recognition.setOnClickListener(new ClickListener());
-		//});
 
 
 		final Button button_stop_recognition = (Button) findViewById(R.id.button3);
@@ -123,8 +115,8 @@ public class MainActivity extends Activity implements OnInitListener, android.vi
 		button_german_tts.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				tts.setLanguage(new Locale("GERMANY"));
-				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"de-DE");
+				tts.setLanguage(new Locale("GERMANY")); //TODO: Parameter
+				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "de-DE"); //TODO: Parameter
 			}
 		});
 
@@ -134,186 +126,153 @@ public class MainActivity extends Activity implements OnInitListener, android.vi
 			public void onClick(View v) {
 
 				tts.setLanguage(new Locale("US"));
-				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"en-US");
+				intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
 
 			}
 		});
-
-
-		//findViewById(R.id.button2).setOnClickListener( this);
-}
-
-
-@Override
-public boolean onCreateOptionsMenu(Menu menu) {
-	// Inflate the menu; this adds items to the action bar if it is present.
-	getMenuInflater().inflate(R.menu.main, menu);
-	return true;
-}
-
-@Override
-public boolean onOptionsItemSelected(MenuItem item) {
-	// Handle action bar item clicks here. The action bar will
-	// automatically handle clicks on the Home/Up button, so long
-	// as you specify a parent activity in AndroidManifest.xml.
-	int id = item.getItemId();
-	if (id == R.id.action_settings) {
-		return true;
 	}
-	return super.onOptionsItemSelected(item);
-}
-
-
-
-
-@Override
-public void onInit(int code) {
-	if (code==TextToSpeech.SUCCESS) {
-
-		tts.setLanguage(Locale.getDefault());
-
-	} else {
-		tts = null;
-		Toast.makeText(this, "Failed to initialize TTS engine.",
-
-				Toast.LENGTH_SHORT).show();
-	}
-
-}
-
-
-private class SocketServerThread extends Thread {
-
-	static final int SocketServerPORT = 8051;
-	ServerSocket serverSocket;
-	int count = 0;
-	String message;
 
 	@Override
-	public void run() {
-		try {
-			serverSocket = new ServerSocket(SocketServerPORT);
-			MainActivity.this.runOnUiThread(new Runnable() {
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
 
-				@Override
-				public void run() {
-					Toast.makeText(MainActivity.this, "I'm waiting here: "  + serverSocket.getLocalPort(), Toast.LENGTH_SHORT).show();
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
 
-					//info.setText();
-				}
-			});
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 
-			message = "";
-			while (true) {
+	@Override
+	public void onInit(int code) {
+		if (code == TextToSpeech.SUCCESS) {
 
-				Socket socket = serverSocket.accept();
-				count++;
-				//message += "#" + count + " from " + socket.getInetAddress() + ":" + socket.getPort() + "\n";
-				//		     //message += socket.getInputStream();
+			tts.setLanguage(Locale.getDefault());
 
-				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				message += in.readLine();
+		} else {
+			tts = null;
+			Toast.makeText(this, "Failed to initialize TTS engine.",
 
+			Toast.LENGTH_SHORT).show();
+		}
+
+	}
+
+	private class SocketServerThread extends Thread {
+
+		static final int SocketServerPORT = 8051;
+		ServerSocket serverSocket;
+		int count = 0;
+		String message;
+
+		@Override
+		public void run() {
+			try {
+				serverSocket = new ServerSocket(SocketServerPORT);
 				MainActivity.this.runOnUiThread(new Runnable() {
 
 					@Override
 					public void run() {
-						//msg.setText(message);
-						speak(message);
-						message = "";
+						Toast.makeText(
+								MainActivity.this,
+								"I'm waiting here: "
+										+ serverSocket.getLocalPort(),
+								Toast.LENGTH_SHORT).show();
 					}
 				});
 
+				message = "";
+				while (true) {
 
+					Socket socket = serverSocket.accept();
+					count++;
+
+					BufferedReader in = new BufferedReader(
+							new InputStreamReader(socket.getInputStream()));
+					message += in.readLine();
+
+					MainActivity.this.runOnUiThread(new Runnable() {
+
+						@Override
+						public void run() {
+							speak(message);
+							message = "";
+						}
+					});
+
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		}
+
+	}
+
+	class listener implements RecognitionListener {
+		public void onReadyForSpeech(Bundle params) {
+			Log.d(TAG, "onReadyForSpeech");
+		}
+
+		public void onBeginningOfSpeech() {
+			Log.d(TAG, "onBeginningOfSpeech");
+		}
+
+		public void onRmsChanged(float rmsdB) {
+			Log.d(TAG, "onRmsChanged");
+		}
+
+		public void onBufferReceived(byte[] buffer) {
+			Log.d(TAG, "onBufferReceived");
+		}
+
+		public void onEndOfSpeech() {
+			Log.d(TAG, "onEndofSpeech");
+		}
+
+		public void onError(int error) {
+			Log.d(TAG, "error " + error);
+			// mText.setText("error " + error);
+		}
+
+		public void onResults(Bundle results) {
+			String str = new String();
+			Log.d(TAG, "onResults " + results);
+			ArrayList data = results
+					.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+			for (int i = 0; i < data.size(); i++) {
+				Log.d(TAG, "result " + data.get(i));
+				str += data.get(i);
+			}
+			TextView tv = (TextView) findViewById(R.id.textView2);
+			tv.setText(data.toString());
+			SpeechRecognizedTask task = new SpeechRecognizedTask();
+
+			EditText edIp = (EditText) findViewById(R.id.editIp);
+			EditText edPort = (EditText) findViewById(R.id.editPort);
+			task.execute(edIp.getText().toString(), edPort.getText().toString(), data.get(0).toString() // TODO: Parameter
+					.toUpperCase());
+			// task.execute("141.26.95.176", "8050",
+			// data.get(0).toString().toUpperCase());
+		}
+
+		public void onPartialResults(Bundle partialResults) {
+			Log.d(TAG, "onPartialResults");
+		}
+
+		public void onEvent(int eventType, Bundle params) {
+			Log.d(TAG, "onEvent " + eventType);
 		}
 	}
 
-}
+	@Override
+	public void onClick(View arg0) {
+		// TODO Auto-generated method stub
 
-
-//	@Override
-//	public void onClick(View arg0) {
-//		// TODO Auto-generated method stub
-//
-//	}
-//	
-//	class ClickListener implements View.OnClickListener
-//	{
-//
-//		@Override
-//		public void onClick(View arg0) {
-//
-//			
-//		}
-//		 
-//
-//        		
-//            
-//		
-//	}
-class listener implements RecognitionListener          
-{
-	public void onReadyForSpeech(Bundle params)
-	{
-		Log.d(TAG, "onReadyForSpeech");
 	}
-	public void onBeginningOfSpeech()
-	{
-		Log.d(TAG, "onBeginningOfSpeech");
-	}
-	public void onRmsChanged(float rmsdB)
-	{
-		Log.d(TAG, "onRmsChanged");
-	}
-	public void onBufferReceived(byte[] buffer)
-	{
-		Log.d(TAG, "onBufferReceived");
-	}
-	public void onEndOfSpeech()
-	{
-		Log.d(TAG, "onEndofSpeech");
-	}
-	public void onError(int error)
-	{
-		Log.d(TAG,  "error " +  error);
-		// mText.setText("error " + error);
-	}
-	public void onResults(Bundle results)                   
-	{
-		String str = new String();
-		Log.d(TAG, "onResults " + results);
-		ArrayList data = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-		for (int i = 0; i < data.size(); i++)
-		{
-			Log.d(TAG, "result " + data.get(i));
-			str += data.get(i);
-		}
-		TextView tv = (TextView) findViewById(R.id.textView2);
-		tv.setText(data.toString());
-		//								new SpeechRecognizedTask().execute("192.168.1.100", 8050, str);
-		SpeechRecognizedTask task = new SpeechRecognizedTask();
-
-		task.execute("192.168.1.100", "8050", data.get(0).toString().toUpperCase());
-		//task.execute("141.26.95.176", "8050", data.get(0).toString().toUpperCase());
-	}
-	public void onPartialResults(Bundle partialResults)
-	{
-		Log.d(TAG, "onPartialResults");
-	}
-	public void onEvent(int eventType, Bundle params)
-	{
-		Log.d(TAG, "onEvent " + eventType);
-	}
-}
-
-
-@Override
-public void onClick(View arg0) {
-	// TODO Auto-generated method stub
-
-}
 }

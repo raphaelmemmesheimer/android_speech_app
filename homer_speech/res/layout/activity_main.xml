@@ -63,5 +63,33 @@
         android:layout_below="@+id/Button4"
         android:layout_marginTop="18dp"
         android:text="English US" />
+    
+    <EditText
+    android:id="@+id/editIp"
+    android:layout_below="@+id/Button02"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true"
+    android:ems="10"
+    android:inputType="text"
+    android:text="192.168.1.101"
+    >
+    <requestFocus />
+	</EditText>
+	
+        <EditText
+    android:id="@+id/editPort"
+    android:layout_below="@+id/editIp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true"
+    android:ems="10"
+    android:inputType="text"
+    android:text="8050"
+    >
+    <requestFocus />
+	</EditText>
 
 </RelativeLayout>
